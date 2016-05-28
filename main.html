@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>reveal.js – The HTML Presentation Framework</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Google File System
+            Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung
+
+            <br/>
+            <small>資工二 陳力＆林祐萱</small>
+
+          </script>
+        </section>
+
+
+        <section data-markdown>
+          <script type="text/template">
+            #### Have you ever wonder?
+            <img height="440px"src="https://www.wired.com/wp-content/uploads/blogs/wiredenterprise/wp-content/uploads//2012/10/ff_googleinfrastructure_large.jpg" alt="GDS"/>
+          </script>
+        </section>
+
+
+        <section>
+          <section data-markdown>
+            <script type="text/template">
+              #### 這是關於2003年至今(?)的 Google File System 架構...
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Assumption
+              <br/>
+              1. inexpensive components
+              2. GB-size files are common case
+              3. wordload: 
+                * <font color="blue" size="8">large sequential</font> & <font color="gray" size="6">small random</font> reads
+                * mostly appending data.
+              4. multiple clients concurrently append to same file.  
+                 Atomicity & minimal synchronization overhead  
+              5. High sustained bandwidth >> low latency.  
+
+
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ### Interface
+              <br/>
+              1. NO POSIX. NO standard API.
+              2. create, delete, read, etc.
+              3. 2 special: snapshot & record append
+             
+            </script>
+          </section>
+
+
+          <section data-markdown>
+            <script type="text/template">
+              ## File
+              is divided into
+              # chunks.
+            </script>
+          </section>
+
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Chunk?
+              * 64MB >> typical 4KB
+              * Why so big? 
+              * Each chunk are stored in 3 chunkservers.
+            </script>
+            <!-- why Big chunk  {{{
+              1. reduce clients' interact with master by less initial request for chunk msg.
+              2. reduce network overhead by keepin a persistent TCP connection to chunkserver
+              3. reduce the size of metadata
+            }}} -->
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Architecture
+              <img height="450" src="./img/gfs_system.png"/>
+            </script>
+          </section>
+        </section>
+
+
+        <section> <!-- 2 -->
+          <section data-markdown>
+            <script type="text/template">
+              ### Single Master
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              #### Master :: metadata
+              1. namespace
+              2. mapping files to chunks
+              3. location of chunks  
+              <br/> 
+              1 & 2 are also kept in **operation log**  
+              ***All metadata are stored in memory.***
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### multiple ChunkServers
+              Serving chunks, ofcourse.
+
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### And multiple Clients.
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### How does it serve exactly?
+            </script>
+            <!-- 口述 -->
+          </section>
+
+        </section> <!-- 2 end -->
+
+        <section data-markdown>
+          <script type="text/template">
+
+          </script>
+        </section>
+
+
+
+
+        <section data-markdown>
+          <script type="text/template">
+            ### GFS 的後續發展
+            * [MapReduce](http://static.googleusercontent.com/media/research.google.com/es/us/archive/mapreduce-osdi04.pdf) 
+            * [Bigtable](http://research.google.com/archive/bigtable.html)
+            * Inspiring Hadoop.
+          </script>
+          <!-- MapReduce {{{
+          http://www.syscom.com.tw/ePaper_Content_EPArticledetail.aspx?id=154&EPID=169&j=4&HeaderName=%E7%A0%94%E7%99%BC%E6%96%B0%E8%A6%96%E7%95%8C
+          MapReduce其實就是一種容易撰寫的分散式與平行處理的程式設計模型，它主要運用在處理大規模的資料集。主要由Map與Reduce兩個動作組成，開發人員在撰寫程式時，僅需要對所要處理的資料，於Map的架構下撰寫商業邏輯(也就是資料運算的部分)，透過key/value pair取得輸入資料，運算完畢後一樣將運算結果透過key/value pair將資料輸出下一階段處理。而Reduce階段則是將上一階段傳送過來的資料依照相同的key值做合併簡化處理即可。
+
+          開發人員完全不需要有平行處理或是分散式系統的知識，包含了不需要知道程式是如何複製到各個電腦中、資料如何讓在各自電腦中的Map存取、機器如果掛掉工作應該如何重新執行以及各台機器中工作如何平行處理等等問題。因此開發人員只需將心力著重在真正要解決的事物上即可，這已經大大的減輕開發人員的負擔。而MapReduce強大之處，就是在於你僅須撰寫幾行程式就可以讓成千上萬台電腦為你的工作。
+          }}} -->
+        </section>
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <!--
+    <section data-markdown>
+      <script type="text/template">
+
+      </script>
+    </section>
+    -->
+
+    <script>
+
+      // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+      // More info https://github.com/hakimel/reveal.js#dependencies
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true },
+        { src: 'plugin/notes/notes.js', async: true }
+      ]
+    });
+
+    </script>
+
+  </body>
+</html>

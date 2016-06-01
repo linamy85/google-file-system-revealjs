@@ -4,10 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>reveal.js – The HTML Presentation Framework</title>
-
-    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-    <meta name="author" content="Hakim El Hattab">
+    <title>GFS slide</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -48,11 +45,19 @@
             Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung
 
             <br/>
-            <small>資工二 陳力＆林祐萱</small>
+            <small>資工二 陳力, 林祐萱</small>
 
           </script>
         </section>
 
+        <section>
+          <h2>What we talk about</h2>
+          <ol>
+            <li>Brief Idea</li>
+            <li>System Architecture</li>
+            <li>Protocol</li>
+          </ol>
+        </section>
 
         <section data-markdown>
           <script type="text/template">
@@ -72,18 +77,16 @@
 
           <section data-markdown>
             <script type="text/template">
-              ### Assumption
+              ### Assumptions
               <br/>
               1. inexpensive components
               2. GB-size files are common case
-              3. wordload: 
+              3. wordload:
                 * <font color="blue" size="8">large sequential</font> & <font color="gray" size="6">small random</font> reads
                 * mostly appending data.
-              4. multiple clients concurrently append to same file.  
-                 Atomicity & minimal synchronization overhead  
-              5. High sustained bandwidth >> low latency.  
-
-
+              4. multiple clients concurrently append to same file.
+                 Atomicity & minimal synchronization overhead
+              5. High sustained bandwidth >> low latency.
             </script>
           </section>
           <section data-markdown>
@@ -93,7 +96,6 @@
               1. NO POSIX. NO standard API.
               2. create, delete, read, etc.
               3. 2 special: snapshot & record append
-             
             </script>
           </section>
 
@@ -111,7 +113,7 @@
             <script type="text/template">
               ### Chunk?
               * 64MB >> typical 4KB
-              * Why so big? 
+              * Why so big?
               * Each chunk are stored in 3 chunkservers.
             </script>
             <!-- why Big chunk  {{{
@@ -129,64 +131,139 @@
           </section>
         </section>
 
-
-        <section> <!-- 2 -->
-          <section data-markdown>
-            <script type="text/template">
-              ### Single Master
-
-            </script>
+        <section>
+          <section>
+            <h2>Master</h2>
+            分散式系統的塔台
           </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              #### Master :: metadata
-              1. namespace
-              2. mapping files to chunks
-              3. location of chunks  
-              <br/> 
-              1 & 2 are also kept in **operation log**  
-              ***All metadata are stored in memory.***
-            </script>
+          <section>
+            <h4>Keep in memory</h4>
+            <ul>
+              <li>namespace of files, ex: /etc/passwd</li>
+              <li>mapping files to chunks</li>
+              <li>location of chunks(including each replica)</li>
+            </ul>
           </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ### multiple ChunkServers
-              Serving chunks, ofcourse.
-
-
-            </script>
+          <section>
+            <h4>In charge of</h4>
+            <ul>
+              <li>第一線接待 client 們</li>
+              <li>確認每個 chunkserver 死活</li>
+              <li>活著很好 死了要找替代的</li>
+              <li>確認每個 chunk 有好好活著</li>
+            </ul>
           </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ### And multiple Clients.
-            </script>
+          <section>
+            <h4>Operation Log</h4>
+            <ul>
+              <li>紀錄 client 做的操作</li>
+              <li>透過模擬這些操作可以回到過去</li>
+              <li>回到無痛無病的健康時期</li>
+            </ul>
           </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ### How does it serve exactly?
-            </script>
-            <!-- 口述 -->
-          </section>
-
-        </section> <!-- 2 end -->
-
-        <section data-markdown>
-          <script type="text/template">
-
-          </script>
         </section>
 
+        <section>
+          <section>
+            <h2>Chunk servers</h2>
+          </section>
 
+          <section>
+            <h4>與 client 親密互動</h4>
+          </section>
+
+          <section>
+            <h4>存 chunk 們</h4>
+            <h6>與他們的 checksum</h6>
+          </section>
+
+          <section>
+            <h4>可以直接對 chunk 操作</h4>
+            <ul>
+              <li>讀</li>
+              <li>寫</li>
+              <li>紀錄 chunk 的版本</li>
+              <li>紀錄對 chunk 操作的 log</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4>本質是 linux 機器</h4>
+            每個 chunk 只是 linux filesystem 裡一個檔案 <br>
+            對 chunk 的 cache 不用煩惱 <br>
+            ext4 本身很智慧
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h2>client 跟 GFS 互動</h2>
+          </section>
+
+          <section>
+            <img height="450" src="./img/gfs_proto.png"/>
+          </section>
+
+          <section>
+            <h4>1. client 說要寫東西到檔案 foo 的某個 chunk A 上</h4>
+            問 master 那個檔案的那個 chunk 在哪些 chunk server上
+          </section>
+
+          <section>
+            <h4>2. master 告訴client 哪些 chunk server 有</h4>
+            其中還告訴說哪一台 server 上存的是 Primary Replica <br>
+            （其他稱為 Secondary） <br>
+            接下來 client 都是跟 Primary 互動
+          </section>
+
+          <section>
+            <h4>3. 把要寫的 data 想辦法送到每個 chunk server</h4>
+            這裡 client 不一定是送到 Primary <br>
+            看網路環境
+          </section>
+
+          <section>
+            <h4>4. client 對 Primary 說要寫在哪裡</h4>
+            Primary 把這個操作紀錄下來 <br>
+            更新 chunk 的版本號
+          </section>
+
+          <section>
+            <h4>5. Primary 告訴 Secondary 說要做這個操作</h4>
+            照著這個操作的 serial number apply 到 chunk 上
+          </section>
+
+          <section>
+            <h4>6. 其他 chunk server 告訴 Primary 說做好了</h4>
+          </section>
+
+          <section>
+            <h4>7. Primary 回報給 client 說完成了</h4>
+            有可能會回傳錯誤 <br>
+            因為可能某個 Secondary chunk 機器壞掉之類的
+          </section>
+
+          <section>
+            <h4>Comments</h4>
+            <ol>
+              <li>Data flow 與 control flow 分開，Data 可以從 Secondary 再流回 Primary</li>
+              <li>By Assumption(3), Most case is append.</li>
+            </ol>
+          </section>
+
+        </section>
 
 
         <section data-markdown>
           <script type="text/template">
             ### GFS 的後續發展
-            * [MapReduce](http://static.googleusercontent.com/media/research.google.com/es/us/archive/mapreduce-osdi04.pdf) 
+            * [MapReduce](http://static.googleusercontent.com/media/research.google.com/es/us/archive/mapreduce-osdi04.pdf)
             * [Bigtable](http://research.google.com/archive/bigtable.html)
             * Inspiring Hadoop.
           </script>
@@ -230,7 +307,8 @@
         { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
         { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
         { src: 'plugin/zoom-js/zoom.js', async: true },
-        { src: 'plugin/notes/notes.js', async: true }
+        { src: 'plugin/notes/notes.js', async: true },
+        { src: 'plugin/math/math.js', async: true }
       ]
     });
 

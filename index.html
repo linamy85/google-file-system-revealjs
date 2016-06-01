@@ -79,14 +79,13 @@
             <script type="text/template">
               ### Assumptions
               <br/>
-              1. inexpensive components
-              2. GB-size files are common case
+              1. <font color="gray"><del>物美</del></font>價廉的機器
+              2. 普遍都是GB-size的檔案
               3. wordload:
-                * <font color="blue" size="8">large sequential</font> & <font color="gray" size="6">small random</font> reads
-                * mostly appending data.
-              4. multiple clients concurrently append to same file.
+                * <font color="yellow" size="8">large sequential</font> & <font color="gray" size="6">small random</font> reads
+                * mostly **appending** data.
+              4. 很多 client 同時 append 到同個檔案.
                  Atomicity & minimal synchronization overhead
-              5. High sustained bandwidth >> low latency.
             </script>
           </section>
           <section data-markdown>

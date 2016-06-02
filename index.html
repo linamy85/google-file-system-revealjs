@@ -211,37 +211,37 @@
           </section>
 
           <section>
-            <h4>1. client 說要寫東西到檔案 foo 的某個 chunk A 上</h4>
+            <h4>1. client 說:「我要寫東西到檔案 foo 的某個 chunk A 上」</h4>
             問 master 那個檔案的那個 chunk 在哪裡
           </section>
 
           <section>
-            <h4>2. master 告訴 client 哪些 chunk server 有</h4>
+            <h4>2. master 告訴 client：「這些 ... chunk server 上有」</h4>
             發個 lease 給其中隨意一台 chunk server （稱為 Primary） <br>
-            其中還告訴說哪一台 server 上存的是 Primary Replica <br>
+            告訴 client 哪一台 server 是 Primary <br>
             （其他稱為 Secondary） <br>
             接下來 client 都是跟 Primary 互動
           </section>
 
           <section>
             <h4>3. 把要寫的 data 想辦法送到每個 chunk server</h4>
-            這裡 client 不一定是送到 Primary <br>
+            client 不一定是送到 Primary <br>
             看網路環境
           </section>
 
           <section>
-            <h4>4. client 對 Primary 說要寫在哪裡</h4>
+            <h4>4. client 告訴 Primary ：「要寫在某某offset」</h4>
             Primary 把這個操作紀錄下來 <br>
             更新 chunk 的版本號
           </section>
 
           <section>
-            <h4>5. Primary 告訴 Secondary 說要做這個操作</h4>
+            <h4>5. Primary 告訴 Secondary：「要做這個操作」</h4>
             照著這個操作的 serial number apply 到 chunk 上
           </section>
 
           <section>
-            <h4>6. 其他 chunk server 告訴 Primary 說做好了</h4>
+            <h4>6. 其他 chunk server 告訴 Primary ：「做好了>///<」</h4>
           </section>
 
           <section>

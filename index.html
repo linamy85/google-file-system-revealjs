@@ -212,11 +212,12 @@
 
           <section>
             <h4>1. client 說要寫東西到檔案 foo 的某個 chunk A 上</h4>
-            問 master 那個檔案的那個 chunk 在哪些 chunk server上
+            問 master 那個檔案的那個 chunk 在哪裡
           </section>
 
           <section>
-            <h4>2. master 告訴client 哪些 chunk server 有</h4>
+            <h4>2. master 告訴 client 哪些 chunk server 有</h4>
+            發個 lease 給其中隨意一台 chunk server （稱為 Primary） <br>
             其中還告訴說哪一台 server 上存的是 Primary Replica <br>
             （其他稱為 Secondary） <br>
             接下來 client 都是跟 Primary 互動
@@ -259,6 +260,39 @@
 
         </section>
 
+
+        <section>
+          <section>
+            <h2>Record Append</h2>
+            Atomic
+          </section>
+
+          <section>
+            <h4>寫在某個檔案最後面</h4>
+            多後面呢？ <br>
+            offset 是 Master 給的
+          </section>
+
+        </section>
+
+
+        <section>
+          <section>
+            <h2>Snapshot</h2>
+          </section>
+
+          <section>
+            <h4>複製檔案/資料夾</h4>
+            先把那些 chunk 的 lease 回收
+          </section>
+
+          <section>
+            <h4>Copy On Write</h4>
+            Master 記 Reference Count 在 Chunk metadata 上 <br>
+            要改的時候再去叫 chunk server 複製
+          </section>
+
+        </section>
 
         <section data-markdown>
           <script type="text/template">

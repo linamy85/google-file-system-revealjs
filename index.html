@@ -62,7 +62,8 @@
         <section data-markdown>
           <script type="text/template">
             #### Have you ever wonder?
-            <img height="440px"src="https://www.wired.com/wp-content/uploads/blogs/wiredenterprise/wp-content/uploads//2012/10/ff_googleinfrastructure_large.jpg" alt="GDS"/>
+            <img height="440px"src="https://www.wired.com/wp-content/uploads/blogs/wiredenterprise/wp-content/uploads//2012/10/ff_googleinfrastructure_large.jpg" alt="GDS"/>  
+            [take a look at data center](http://www.google.com/about/datacenters/inside/streetview/)
           </script>
         </section>
 
@@ -84,8 +85,8 @@
               3. wordload:
                 * <font color="yellow" size="8">large sequential</font> & <font color="gray" size="6">small random</font> reads
                 * mostly **appending** data.
-              4. 很多 client 同時 append 到同個檔案.
-                 Atomicity & minimal synchronization overhead
+              4. 很多 client 同時 append 到同個檔案.  
+              => Atomicity & minimal synchronization overhead
             </script>
           </section>
           <section data-markdown>
@@ -110,8 +111,8 @@
 
           <section data-markdown>
             <script type="text/template">
-              ### Chunk?
-              * 64MB >> typical 4KB
+              # Chunk?
+              * 64MB >> Linux 4KB block
               * Why so big?
               * Each chunk are stored in 3 chunkservers.
             </script>
